@@ -19,16 +19,14 @@ class MovieDBGenerator {
         this.movieRepository = movieRepository;
     }
 
-    List<Movie> generateMoviesFromDb() {
+    List<Movie> generateMoviesFromDb(int count) {
         List<Movie> resultList = new ArrayList<>();
         Iterable<Movie> movieListFromDb = movieRepository.findAll();
         LinkedList<Movie> checkedMovies = checkifPlotExists(movieListFromDb);
 
         Collections.shuffle(checkedMovies);
 
-        for (int i = 0; i < 8; i++) {
-            System.out.println(checkedMovies.get(i));
-
+        for (int i = 0; i < count; i++) {
             resultList.add(checkedMovies.get(i));
         }
 
@@ -46,9 +44,6 @@ class MovieDBGenerator {
 
         for (Movie movie :
                     movies) {
-//            System.out.println(movie.toString());
-//            System.out.println(movie.getPlot());
-
             if (movie.getPlot() == null) moviesToDelete.add(movie);
         }
 
@@ -64,8 +59,4 @@ class MovieDBGenerator {
 
         return movies;
     }
-
-//    public List<Movie> getResultList() {
-//        return resultList;
-//    }
 }

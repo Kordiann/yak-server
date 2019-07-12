@@ -65,7 +65,7 @@ public class MovieOperator {
                 if (!movieExists) {
                     Movie movie = connector.getMovies().getFirst();
                     user.getSavedMovies().add(movie);
-
+// TODO BUG => Data truncation: Data too long for column 'plot' at row 1 <=
                     movieRepository.save(movie);
                     userRepository.save(user);
 

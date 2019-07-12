@@ -11,7 +11,7 @@ import java.util.List;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping(path = "/movie")
+@RequestMapping(path = "/movies")
 public class MovieController {
 
     @Autowired
@@ -41,23 +41,25 @@ public class MovieController {
 
     @GetMapping(path="/main")
     public @ResponseBody
-    List<Movie> getMainPageMovies() {
+    List<Movie> getMainPageMovies(@RequestParam Integer count) {
         MovieDBGenerator movieDBGenerator = new MovieDBGenerator(movieRepository);
-
-        for (Movie movie :
-                movieDBGenerator.generateMoviesFromDb()) {
-            System.out.println(movie.getSaver());
-        }
-
-        return movieDBGenerator.generateMoviesFromDb();
+        return movieDBGenerator.generateMoviesFromDb(count);
     }
 
     @GetMapping()
     public @ResponseBody
     Iterable<Movie> getAllMovies(@RequestParam String title) {
         MovieSearch movieSearch = new MovieSearch("s", title);
-
         return movieSearch.getResultList();
+    }
+
+//    TODO SEARCH ONE MOVIE
+
+    @GetMapping("/movie")
+    public @ResponseBody
+    Movie getOneMovie(@RequestParam String id) {
+        MovieSearch movieSearch = new MovieSearch("i", id);
+        return movieSearch.getResultMovie();
     }
 
 //    ---------- DELETE METHODS ----------      //

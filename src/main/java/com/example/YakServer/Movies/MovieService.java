@@ -8,6 +8,7 @@ import java.util.List;
 
 class MovieService {
     List<Movie> resultList = new ArrayList<>();
+    Movie resultMovie = new Movie();
     Connector connector;
 
     LinkedList<Movie> deleteMoviesWithoutPosters(LinkedList<Movie> moviesToCheck) {
@@ -26,9 +27,6 @@ class MovieService {
                     moviesToRemove) {
             moviesToCheck.remove(movieToRemove);
         }
-
-        System.out.println(moviesToCheck);
-
         return moviesToCheck;
     }
 
@@ -44,4 +42,6 @@ class MovieService {
     List<Movie> getResultList() {
         return resultList;
     }
+
+    Movie getResultMovie() { return resultMovie; }
 }
