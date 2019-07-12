@@ -1,4 +1,4 @@
-package com.example.demo.Models;
+package com.example.YakServer.Models;
 
 import org.hibernate.annotations.NaturalId;
 

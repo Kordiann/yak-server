@@ -1,8 +1,8 @@
-package com.example.demo.Movies;
+package com.example.YakServer.Movies;
 
-import com.example.demo.Models.Movie;
-import com.example.demo.Models.User;
-import com.example.demo.Repositories.MovieRepository;
+import com.example.YakServer.Models.Movie;
+import com.example.YakServer.Models.User;
+import com.example.YakServer.Repositories.MovieRepository;
 import com.google.common.collect.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 

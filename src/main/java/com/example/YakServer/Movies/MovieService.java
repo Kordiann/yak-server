@@ -1,6 +1,6 @@
-package com.example.demo.Movies;
+package com.example.YakServer.Movies;
 
-import com.example.demo.Models.Movie;
+import com.example.YakServer.Models.Movie;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

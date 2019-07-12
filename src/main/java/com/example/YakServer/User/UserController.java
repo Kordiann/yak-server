@@ -1,13 +1,12 @@
-package com.example.demo.User;
+package com.example.YakServer.User;
 
-import com.example.demo.Models.Message;
-import com.example.demo.Models.User;
-import com.example.demo.Repositories.MessageRepository;
-import com.example.demo.Repositories.MovieRepository;
-import com.example.demo.Repositories.UserRepository;
+import com.example.YakServer.Models.Message;
+import com.example.YakServer.Models.User;
+import com.example.YakServer.Repositories.MessageRepository;
+import com.example.YakServer.Repositories.MovieRepository;
+import com.example.YakServer.Repositories.UserRepository;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.configurationprocessor.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

@@ -1,6 +1,6 @@
-package com.example.demo.Repositories;
+package com.example.YakServer.Repositories;
 
-import com.example.demo.Models.Team;
+import com.example.YakServer.Models.Team;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;

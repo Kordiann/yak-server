@@ -1,7 +1,7 @@
-package com.example.demo.Movies;
+package com.example.YakServer.Movies;
 
-import com.example.demo.Models.Movie;
-import com.example.demo.Models.User;
+import com.example.YakServer.Models.Movie;
+import com.example.YakServer.Models.User;
 import org.springframework.boot.configurationprocessor.json.JSONArray;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 

@@ -1,6 +1,6 @@
-package com.example.demo.Repositories;
+package com.example.YakServer.Repositories;
 
-import com.example.demo.Models.MessagesBox;
+import com.example.YakServer.Models.MessagesBox;
 import org.springframework.data.repository.CrudRepository;
 
 public interface MessagesBoxRepository extends CrudRepository<MessagesBox, Integer> {

@@ -1,6 +1,6 @@
-package com.example.demo.Repositories;
+package com.example.YakServer.Repositories;
 
-import com.example.demo.Models.User;
+import com.example.YakServer.Models.User;
 import org.springframework.data.repository.CrudRepository;
 
 public interface UserRepository  extends CrudRepository<User, Integer> {

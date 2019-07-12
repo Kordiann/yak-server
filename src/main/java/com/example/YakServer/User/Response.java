@@ -1,4 +1,4 @@
-package com.example.demo.User;
+package com.example.YakServer.User;
 
 
 public class Response {
