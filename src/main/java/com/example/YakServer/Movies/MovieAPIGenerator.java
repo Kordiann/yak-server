@@ -24,22 +24,12 @@ class MovieAPIGenerator extends MovieService {
     private void validateResults(String title) {
         connector = new Connector("s", title);
 
-        System.out.println(title);
-        for(Movie movie :
-                connector.getMovies())
-        {
-            System.out.println(movie.getTitle());
-            System.out.println(movie.getPoster());
-        }
-
         List<Movie> result = deleteMoviesWithoutPosters(connector.getMovies());
-        System.out.println(result);
 
         if (result.isEmpty()) {
             String newTitle = generateOneWord();
             validateResults(newTitle);
         } else {
-            System.out.println(result.get(0));
             resultList.add(result.get(0));
         }
     }

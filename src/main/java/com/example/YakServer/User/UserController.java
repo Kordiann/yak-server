@@ -16,7 +16,7 @@ import java.util.Date;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
-@RequestMapping(path = "/user")
+@RequestMapping(path = "/users")
 public class UserController {
 
     @Autowired
@@ -93,36 +93,42 @@ public class UserController {
     public @ResponseBody
     String authorizeUser (@RequestParam String userName, @RequestParam String password) {
             Gson gson = new Gson();
-            Response response = new Response();
+            AuthResponse response = new AuthResponse();
 
             User user = userRepository.findByUserName(userName);
-            //TODO use password to authorize!!!
 
-            if (user == null) {
-                response.setId(null);
-                response.setResponse("400");
-            } else {
+            if(user.getUserName().equals(userName)
+                    && user.getPassword().equals(password)){
                 response.setId(user.getId().toString());
                 response.setResponse("200");
+            } else {
+                response.setId(null);
+                response.setResponse("400");
             }
 
-//            for (User user :
-//                    Users) {
-//                if (user.getUserName().equals(userName)) userToCheck = user;
-//            }
-//
-//            if(userToCheck.equals(null)) {
-//                response.setResponse("400");
-//            } else {
-//                if (userToCheck.getUserName().equals(userName) && userToCheck.getPassword().equals(password)) {
-//                    response.setId(userToCheck.getId().toString());
-//                    response.setResponse("200");
-//                } else {
-//                    response.setResponse("400");
-//                }
-//            }
-
             return gson.toJson(response);
+    }
+
+    @GetMapping(path = "/user")
+    public @ResponseBody
+    String getUser (@RequestParam String userName, @RequestParam String password) {
+        Gson gson = new Gson();
+        UserResponse response = new UserResponse();
+
+        User user = userRepository.findByUserName(userName);
+
+        if(user.getUserName().equals(userName)
+                && user.getPassword().equals(password)){
+            response.setId(user.getId().toString());
+//            response.setSavedMovies(user.getSavedMovies());
+            response.setEmail(user.getEmail());
+            response.setResponse("200");
+        } else {
+            response.setId(null);
+            response.setResponse("400");
+        }
+
+        return gson.toJson(response);
     }
 
 }

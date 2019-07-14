@@ -33,6 +33,32 @@ class MovieDBGenerator {
         return resultList;
     }
 
+    List<Movie> generateMoviesFromDb() {
+        Iterable<Movie> movieListFromDb = movieRepository.findAll();
+        return checkifPlotExists(movieListFromDb);
+    }
+
+    List<Movie> generateLastestMoviesFromDb(int count) {
+        List<Movie> movies = generateMoviesFromDb();
+
+        List<Movie> lastestMovies = new ArrayList<>();
+
+        for (Movie movie :
+                movies) {
+            if (Integer.parseInt(movie.getYear()) >= 2018) {
+                lastestMovies.add(movie);
+            }
+        }
+
+        List<Movie> movieResult = new ArrayList<>();
+
+        for (int i = 0; i < count; i++) {
+            movieResult.add(lastestMovies.get(i));
+        }
+
+        return movieResult;
+    }
+
     private LinkedList<Movie> checkifPlotExists(Iterable<Movie> moviesToCheck) {
         LinkedList<Movie> movies = Lists.newLinkedList(moviesToCheck);
         List<Movie> moviesToDelete = new ArrayList<>();

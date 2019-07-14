@@ -13,6 +13,10 @@ public class User {
     private String userName;
     private String password;
 
+    //TODO Activate email system
+    private boolean isActivate;
+    private boolean isActivationCodeSend;
+
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,

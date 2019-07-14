@@ -29,6 +29,22 @@ class MovieService {
         }
         return moviesToCheck;
     }
+    //    TODO deleteMoviesWithoutPlot //
+//    LinkedList<Movie> deleteMoviesWithoutPlot(LinkedList<Movie> moviesToCheck) {
+//        List<Movie> moviesToRemove = new ArrayList<>();
+//
+//        for(Movie movieToCheck :
+//                    moviesToCheck) {
+//            if(movieToCheck.getPlot() == null) moviesToRemove.add(movieToCheck);
+//        }
+//
+//        for(Movie movieToRemove :
+//                    moviesToRemove) {
+//            moviesToCheck.remove(movieToRemove);
+//        }
+//
+//        return moviesToCheck;
+//    }
 
     private Boolean checkIfPosterExists(String URLName) {
 //        TODO Make better implementation

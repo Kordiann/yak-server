@@ -19,9 +19,17 @@ class Connector {
     private String TYPE_OF_SEARCHING;
 
     Connector(String TYPE_OF_SEARCHING, String REQUEST_PARAM) {
-        this.API_URL = "http://www.omdbapi.com/?" + TYPE_OF_SEARCHING + "=" + REQUEST_PARAM + "&apikey=503d68ce";
+        this.API_URL = "http://www.omdbapi.com/?"
+                + TYPE_OF_SEARCHING
+                + "="
+                + updateRequestParam(REQUEST_PARAM)
+                + "&apikey=503d68ce";
         this.TYPE_OF_SEARCHING = TYPE_OF_SEARCHING;
         getResponse();
+    }
+
+    private String updateRequestParam(String request_param) {
+        return request_param.replaceAll(" ", "+");
     }
 
     // Getting Response
@@ -65,8 +73,6 @@ class Connector {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
     }
 
     //Method which gives Response Param as boolean
