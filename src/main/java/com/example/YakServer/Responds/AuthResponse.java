@@ -1,11 +1,11 @@
-package com.example.YakServer.User;
+package com.example.YakServer.Responds;
 
 
 public class AuthResponse {
     private String Response;
     private String Id;
 
-    AuthResponse() {
+    public AuthResponse() {
 
     }
 

@@ -40,11 +40,18 @@ public class MovieController {
         return movieAPIGenerator.getResultList();
     }
 
-    @GetMapping(path="/main")
+    @GetMapping(path="/home")
     public @ResponseBody
-    List<Movie> getMainPageMovies(@RequestParam Integer count) {
+    List<Movie> getHomePageMovies(@RequestParam Integer count) {
         MovieDBGenerator movieDBGenerator = new MovieDBGenerator(movieRepository);
         return movieDBGenerator.generateLastestMoviesFromDb(count);
+    }
+
+    @GetMapping(path="/search")
+    public @ResponseBody
+    List<Movie> getSearchPageMovies(@RequestParam Integer count) {
+        MovieDBGenerator movieDBGenerator = new MovieDBGenerator(movieRepository);
+        return movieDBGenerator.generateMoviesFromDb(count);
     }
 
     @GetMapping()

@@ -16,6 +16,7 @@ public class User {
     //TODO Activate email system
     private boolean isActivate;
     private boolean isActivationCodeSend;
+    private Integer activationCode;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
@@ -69,5 +70,29 @@ public class User {
 
     public void setSavedMovies(List<Movie> savedMovies) {
         SavedMovies = savedMovies;
+    }
+
+    public boolean isActivate() {
+        return isActivate;
+    }
+
+    public void setActivate(boolean activate) {
+        isActivate = activate;
+    }
+
+    public boolean isActivationCodeSend() {
+        return isActivationCodeSend;
+    }
+
+    public void setActivationCodeSend(boolean activationCodeSend) {
+        isActivationCodeSend = activationCodeSend;
+    }
+
+    public Integer getActivationCode() {
+        return activationCode;
+    }
+
+    public void setActivationCode(Integer activationCode) {
+        this.activationCode = activationCode;
     }
 }

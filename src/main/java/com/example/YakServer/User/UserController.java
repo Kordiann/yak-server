@@ -1,10 +1,14 @@
 package com.example.YakServer.User;
 
+import com.example.YakServer.Responds.AuthResponse;
+import com.example.YakServer.Responds.Response;
+import com.example.YakServer.Responds.UserResponse;
 import com.example.YakServer.Models.Message;
 import com.example.YakServer.Models.User;
 import com.example.YakServer.Repositories.MessageRepository;
 import com.example.YakServer.Repositories.MovieRepository;
 import com.example.YakServer.Repositories.UserRepository;
+
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -31,12 +35,16 @@ public class UserController {
     @PostMapping(path = "/add")
     public @ResponseBody
     ResponseEntity<String> addUser (@RequestParam String userName, @RequestParam String password, @RequestParam String email) {
+        EmailOperator operator = new EmailOperator(userRepository);
 
         User user = new User();
 
         user.setUserName(userName);
         user.setPassword(password);
+        user.setActivationCode(operator.generateCode());
         user.setEmail(email);
+
+        operator.sendEmail(email);
 
         userRepository.save(user);
 
@@ -73,7 +81,12 @@ public class UserController {
         return "Posted Message from " + author.getUserName() + " To " + recipient.getUserName();
     }
 
-
+    @PostMapping(path = "/user/change_password")
+    public @ResponseBody
+    String updatePassword (@RequestParam Integer userID, @RequestParam String oldPassword,
+                              @RequestParam String newPassword) {
+        return "XD";
+    }
 
 //    ---------- GET METHODS ----------      //
 
@@ -111,16 +124,18 @@ public class UserController {
 
     @GetMapping(path = "/user")
     public @ResponseBody
-    String getUser (@RequestParam String userName, @RequestParam String password) {
+    String getUser (@RequestParam String userName, @RequestParam Integer userID) {
         Gson gson = new Gson();
         UserResponse response = new UserResponse();
 
         User user = userRepository.findByUserName(userName);
 
         if(user.getUserName().equals(userName)
-                && user.getPassword().equals(password)){
+                && user.getId().equals(userID)){
             response.setId(user.getId().toString());
 //            response.setSavedMovies(user.getSavedMovies());
+            response.setActivate(user.isActivate());
+            response.setActivationCodeSend(user.isActivationCodeSend());
             response.setEmail(user.getEmail());
             response.setResponse("200");
         } else {
@@ -131,4 +146,28 @@ public class UserController {
         return gson.toJson(response);
     }
 
+    @GetMapping(path = "/activate")
+    public @ResponseBody
+    String activateEmail (@RequestParam Integer code) {
+        EmailOperator operator = new EmailOperator(userRepository);
+        Gson gson = new Gson();
+        Response res = new Response();
+
+        operator.activate(code);
+
+        if (operator.activate(code)) {
+            res.setResponse("200");
+        } else {
+            res.setResponse("400");
+        }
+
+        return gson.toJson(res);
+    }
+
+    @GetMapping(path = "/send")
+    public @ResponseBody
+    void send (@RequestParam String email) {
+        EmailOperator operator = new EmailOperator(userRepository);
+        operator.sendEmail(email);
+    }
 }

@@ -1,4 +1,4 @@
-package com.example.YakServer.User;
+package com.example.YakServer.Responds;
 
 
 import com.example.YakServer.Models.Movie;
@@ -10,9 +10,11 @@ public class UserResponse {
     private String Id;
     private String UserName;
     private String Email;
+    private boolean isActivate;
+    private boolean isActivationCodeSend;
     private List<Movie> SavedMovies;
 
-    UserResponse() {
+    public UserResponse() {
 
     }
 
@@ -54,5 +56,21 @@ public class UserResponse {
 
     public void setSavedMovies(List<Movie> savedMovies) {
         SavedMovies = savedMovies;
+    }
+
+    public boolean isActivate() {
+        return isActivate;
+    }
+
+    public void setActivate(boolean activate) {
+        isActivate = activate;
+    }
+
+    public boolean isActivationCodeSend() {
+        return isActivationCodeSend;
+    }
+
+    public void setActivationCodeSend(boolean activationCodeSend) {
+        isActivationCodeSend = activationCodeSend;
     }
 }
