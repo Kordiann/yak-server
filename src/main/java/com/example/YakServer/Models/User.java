@@ -1,5 +1,8 @@
 package com.example.YakServer.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -27,6 +30,7 @@ public class User {
             name = "user_movies",
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "movie_id") } )
+    @JsonManagedReference
     private List<Movie> SavedMovies;
 
     @javax.validation.constraints.Email
@@ -64,6 +68,7 @@ public class User {
         Email = email;
     }
 
+    @JsonIgnore
     public List<Movie> getSavedMovies() {
         return SavedMovies;
     }
@@ -95,4 +100,5 @@ public class User {
     public void setActivationCode(Integer activationCode) {
         this.activationCode = activationCode;
     }
+
 }

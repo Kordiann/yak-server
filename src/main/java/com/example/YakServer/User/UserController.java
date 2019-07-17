@@ -1,5 +1,6 @@
 package com.example.YakServer.User;
 
+import com.example.YakServer.Models.Movie;
 import com.example.YakServer.Responds.AuthResponse;
 import com.example.YakServer.Responds.Response;
 import com.example.YakServer.Responds.UserResponse;
@@ -16,7 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.util.*;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
@@ -85,7 +86,27 @@ public class UserController {
     public @ResponseBody
     String updatePassword (@RequestParam Integer userID, @RequestParam String oldPassword,
                               @RequestParam String newPassword) {
-        return "XD";
+        Optional optionalUser = userRepository.findById(userID);
+        Gson gson = new Gson();
+        Response res = new Response();
+
+        if(optionalUser.isPresent()) {
+            User user = (User) optionalUser.get();
+
+            if(user.getPassword().equals(oldPassword)) {
+                user.setPassword(newPassword);
+                userRepository.save(user);
+
+                res.setResponse("200");
+            }else {
+                res.setResponse("400");
+            }
+
+        } else {
+            res.setResponse("400");
+        }
+
+        return gson.toJson(res);
     }
 
 //    ---------- GET METHODS ----------      //
@@ -133,7 +154,6 @@ public class UserController {
         if(user.getUserName().equals(userName)
                 && user.getId().equals(userID)){
             response.setId(user.getId().toString());
-//            response.setSavedMovies(user.getSavedMovies());
             response.setActivate(user.isActivate());
             response.setActivationCodeSend(user.isActivationCodeSend());
             response.setEmail(user.getEmail());
@@ -144,6 +164,12 @@ public class UserController {
         }
 
         return gson.toJson(response);
+    }
+
+    @GetMapping(path = "/user/movies")
+    public @ResponseBody
+    List<Movie> getUserMovies (@RequestParam Integer userID) {
+        return new UserService(userRepository).getUserMovies(userID);
     }
 
     @GetMapping(path = "/activate")

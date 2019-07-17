@@ -1,7 +1,12 @@
 package com.example.YakServer.Models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "movie")
@@ -18,10 +23,8 @@ public class Movie {
     private String plot;
 
     @ManyToMany(fetch = FetchType.LAZY,
-            cascade = {
-                    CascadeType.PERSIST,
-                    CascadeType.MERGE
-            }, mappedBy = "SavedMovies")
+             mappedBy = "SavedMovies")
+    @JsonBackReference
     private List<User> Saver;
 
     public Integer getId() {
@@ -64,6 +67,7 @@ public class Movie {
         this.imdbID = imdbID;
     }
 
+    @JsonIgnore
     public List<User> getSaver() {
         return Saver;
     }
