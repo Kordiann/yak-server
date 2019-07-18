@@ -52,35 +52,7 @@ public class UserController {
         return new ResponseEntity<>("Hello World!", HttpStatus.OK);
     }
 
-    @PostMapping(path = "/message/post")
-    public @ResponseBody
-    String createChatMessage (@RequestParam Integer authorId, @RequestParam Integer recipientId,
-                              @RequestParam String content) {
 
-        Iterable<User> Users = userRepository.findAll();
-
-        Date date =  new Date();
-
-        Message message = new Message();
-
-        User author = new User();
-        User recipient = new User();
-
-        for (User user :
-                Users) {
-            if(user.getId().equals(authorId)) author = user;
-            else if(user.getId().equals(recipientId)) recipient = user;
-        }
-
-        message.setAuthorUser(author);
-        message.setRecipientUser(recipient);
-        message.setTimeSend(date);
-        message.setContent(content);
-
-        messageRepository.save(message);
-
-        return "Posted Message from " + author.getUserName() + " To " + recipient.getUserName();
-    }
 
     @PostMapping(path = "/user/change_password")
     public @ResponseBody
@@ -129,7 +101,7 @@ public class UserController {
             Gson gson = new Gson();
             AuthResponse response = new AuthResponse();
 
-            User user = userRepository.findByUserName(userName);
+            User user = userRepository.findByUserName(userName).get();
 
             if(user.getUserName().equals(userName)
                     && user.getPassword().equals(password)){
@@ -149,7 +121,7 @@ public class UserController {
         Gson gson = new Gson();
         UserResponse response = new UserResponse();
 
-        User user = userRepository.findByUserName(userName);
+        User user = userRepository.findByUserName(userName).get();
 
         if(user.getUserName().equals(userName)
                 && user.getId().equals(userID)){
@@ -172,28 +144,58 @@ public class UserController {
         return new UserService(userRepository).getUserMovies(userID);
     }
 
-    @GetMapping(path = "/activate")
-    public @ResponseBody
-    String activateEmail (@RequestParam Integer code) {
-        EmailOperator operator = new EmailOperator(userRepository);
-        Gson gson = new Gson();
-        Response res = new Response();
+//    @GetMapping(path = "/activate")
+//    public @ResponseBody
+//    String activateEmail (@RequestParam Integer code) {
+//        EmailOperator operator = new EmailOperator(userRepository);
+//        Gson gson = new Gson();
+//        Response res = new Response();
+//
+//        operator.activate(code);
+//
+//        if (operator.activate(code)) {
+//            res.setResponse("200");
+//        } else {
+//            res.setResponse("400");
+//        }
+//
+//        return gson.toJson(res);
+//    }
 
-        operator.activate(code);
+//    @GetMapping(path = "/send")
+//    public @ResponseBody
+//    void send (@RequestParam String email) {
+//        EmailOperator operator = new EmailOperator(userRepository);
+//        operator.sendEmail(email);
+//    }
 
-        if (operator.activate(code)) {
-            res.setResponse("200");
-        } else {
-            res.setResponse("400");
-        }
-
-        return gson.toJson(res);
-    }
-
-    @GetMapping(path = "/send")
-    public @ResponseBody
-    void send (@RequestParam String email) {
-        EmailOperator operator = new EmailOperator(userRepository);
-        operator.sendEmail(email);
-    }
+//    @PostMapping(path = "/message/post")
+//    public @ResponseBody
+//    String createChatMessage (@RequestParam Integer authorId, @RequestParam Integer recipientId,
+//                              @RequestParam String content) {
+//
+//        Iterable<User> Users = userRepository.findAll();
+//
+//        Date date =  new Date();
+//
+//        Message message = new Message();
+//
+//        User author = new User();
+//        User recipient = new User();
+//
+//        for (User user :
+//                Users) {
+//            if(user.getId().equals(authorId)) author = user;
+//            else if(user.getId().equals(recipientId)) recipient = user;
+//        }
+//
+//        message.setAuthorUser(author);
+//        message.setRecipientUser(recipient);
+//        message.setTimeSend(date);
+//        message.setContent(content);
+//
+//        messageRepository.save(message);
+//
+//        return "Posted Message from " + author.getUserName() + " To " + recipient.getUserName();
+//    }
 }

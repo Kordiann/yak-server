@@ -100,5 +100,4 @@ public class User {
     public void setActivationCode(Integer activationCode) {
         this.activationCode = activationCode;
     }
-
 }
