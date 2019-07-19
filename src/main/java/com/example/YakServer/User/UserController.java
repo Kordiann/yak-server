@@ -11,6 +11,8 @@ import com.example.YakServer.Repositories.MovieRepository;
 import com.example.YakServer.Repositories.UserRepository;
 
 import com.google.gson.Gson;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +47,7 @@ public class UserController {
         user.setActivationCode(operator.generateCode());
         user.setEmail(email);
 
-        operator.sendEmail(email);
+//        operator.sendEmail(email);
 
         userRepository.save(user);
 
@@ -142,6 +144,12 @@ public class UserController {
     public @ResponseBody
     List<Movie> getUserMovies (@RequestParam Integer userID) {
         return new UserService(userRepository).getUserMovies(userID);
+    }
+
+    @GetMapping(path = "/user/test")
+    public @ResponseBody
+    void sendEmail () throws UnirestException {
+       new EmailOperator(userRepository).sendSimpleMessage();
     }
 
 //    @GetMapping(path = "/activate")
