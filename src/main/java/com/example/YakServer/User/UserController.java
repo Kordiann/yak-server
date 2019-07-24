@@ -10,8 +10,11 @@ import com.example.YakServer.Repositories.MessageRepository;
 import com.example.YakServer.Repositories.MovieRepository;
 import com.example.YakServer.Repositories.UserRepository;
 
+import com.example.YakServer.Responds.UsersResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -35,6 +38,10 @@ public class UserController {
     @Autowired
     public MessageRepository messageRepository;
 
+    private final Gson gson = new Gson();
+
+    private final ObjectMapper mapper = new ObjectMapper();
+
     @PostMapping(path = "/add")
     public @ResponseBody
     ResponseEntity<String> addUser (@RequestParam String userName, @RequestParam String password, @RequestParam String email) {
@@ -46,6 +53,7 @@ public class UserController {
         user.setPassword(password);
         user.setActivationCode(operator.generateCode());
         user.setEmail(email);
+        user.setDefaultUser(true);
 
 //        operator.sendEmail(email);
 
@@ -61,7 +69,6 @@ public class UserController {
     String updatePassword (@RequestParam Integer userID, @RequestParam String oldPassword,
                               @RequestParam String newPassword) {
         Optional optionalUser = userRepository.findById(userID);
-        Gson gson = new Gson();
         Response res = new Response();
 
         if(optionalUser.isPresent()) {
@@ -87,8 +94,15 @@ public class UserController {
 
     @GetMapping(path = "/all")
     public @ResponseBody
-    Iterable<User> allUsers () {
-        return userRepository.findAll();
+    String allUsers () throws JsonProcessingException{
+        UsersResponse res = new UsersResponse();
+
+        List<User> users = Lists.newArrayList(userRepository.findAll());
+
+        res.setResponse("200");
+        res.setUsers(users);
+
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(res);
     }
 
     @GetMapping(path = "/message/all")
@@ -100,37 +114,13 @@ public class UserController {
     @GetMapping(path = "/authorize")
     public @ResponseBody
     String authorizeUser (@RequestParam String userName, @RequestParam String password) {
-            Gson gson = new Gson();
-            AuthResponse response = new AuthResponse();
-
-            User user = userRepository.findByUserName(userName).get();
-
-            if(user.getUserName().equals(userName)
-                    && user.getPassword().equals(password)){
-                response.setId(user.getId().toString());
-                response.setResponse("200");
-            } else {
-                response.setId(null);
-                response.setResponse("400");
-            }
-
-            return gson.toJson(response);
-    }
-
-    @GetMapping(path = "/user")
-    public @ResponseBody
-    String getUser (@RequestParam String userName, @RequestParam Integer userID) {
-        Gson gson = new Gson();
-        UserResponse response = new UserResponse();
+        AuthResponse response = new AuthResponse();
 
         User user = userRepository.findByUserName(userName).get();
 
         if(user.getUserName().equals(userName)
-                && user.getId().equals(userID)){
+                && user.getPassword().equals(password)){
             response.setId(user.getId().toString());
-            response.setActivate(user.isActivate());
-            response.setActivationCodeSend(user.isActivationCodeSend());
-            response.setEmail(user.getEmail());
             response.setResponse("200");
         } else {
             response.setId(null);
@@ -138,6 +128,30 @@ public class UserController {
         }
 
         return gson.toJson(response);
+    }
+
+    @GetMapping(path = "/user")
+    public @ResponseBody
+    String getUser (@RequestParam String userName, @RequestParam Integer userID)
+            throws JsonProcessingException {
+        UserResponse res = new UserResponse();
+
+        Optional optionalUser = userRepository.findByUserName(userName);
+
+        if(optionalUser.isPresent()) {
+            User user = (User) optionalUser.get();
+
+            if(user.getUserName().equals(userName)
+                    && user.getId().equals(userID)){
+                res.setUser(user);
+                res.setResponse("200");
+            } else {
+                res.setUser(null);
+                res.setResponse("400");
+            }
+        }
+
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(res);
     }
 
     @GetMapping(path = "/user/movies")
@@ -149,8 +163,24 @@ public class UserController {
     @GetMapping(path = "/user/test")
     public @ResponseBody
     void sendEmail () throws UnirestException {
-       new EmailOperator(userRepository).sendSimpleMessage();
+        new EmailOperator(userRepository).sendSimpleMessage();
     }
+
+    @GetMapping(path = "/baba")
+    public @ResponseBody
+    void sada () {
+        List<User> users = Lists.newArrayList(userRepository.findAll());
+
+        for (User user :
+                    users) {
+            user.setDefaultUser(true);
+            userRepository.save(user);
+        }
+
+
+    }
+
+
 
 //    @GetMapping(path = "/activate")
 //    public @ResponseBody

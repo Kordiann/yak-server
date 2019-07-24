@@ -36,6 +36,14 @@ public class User {
     @javax.validation.constraints.Email
     private String Email;
 
+    private Boolean isFriend;
+
+    private Boolean isSender;
+
+    private Boolean isRecipient;
+
+    private Boolean isDefaultUser;
+
     public Integer getId() {
         return id;
     }
@@ -99,5 +107,37 @@ public class User {
 
     public void setActivationCode(Integer activationCode) {
         this.activationCode = activationCode;
+    }
+
+    public Boolean getFriend() {
+        return isFriend;
+    }
+
+    public void setFriend(Boolean friend) {
+        isFriend = friend;
+    }
+
+    public Boolean getSender() {
+        return isSender;
+    }
+
+    public void setSender(Boolean sender) {
+        isSender = sender;
+    }
+
+    public Boolean getRecipient() {
+        return isRecipient;
+    }
+
+    public void setRecipient(Boolean recipient) {
+        isRecipient = recipient;
+    }
+
+    public Boolean getDefaultUser() {
+        return isDefaultUser;
+    }
+
+    public void setDefaultUser(Boolean defaultUser) {
+        isDefaultUser = defaultUser;
     }
 }

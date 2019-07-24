@@ -21,7 +21,6 @@ public class MovieOperator {
     MovieOperator(UserRepository userRepository, MovieRepository movieRepository) {
         this.userRepository = userRepository;
         this.movieRepository = movieRepository;
-
     }
 
     String assignMovieToUser(String movieIMDBID, String userName) {

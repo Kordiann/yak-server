@@ -1,5 +1,7 @@
 package com.example.YakServer.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -36,6 +38,7 @@ public class Friend {
         this.id = id;
     }
 
+    @JsonIgnore
     public User getFirstUser() {
         return firstUser;
     }
@@ -44,6 +47,7 @@ public class Friend {
         this.firstUser = firstUser;
     }
 
+    @JsonIgnore
     public User getSecondUser() {
         return secondUser;
     }

@@ -2,13 +2,11 @@ package com.example.YakServer.Responds;
 
 import com.example.YakServer.Models.User;
 
-public class UserResponse {
+import java.util.List;
+
+public class UsersResponse {
     private String Response;
-    private User user;
-
-    public UserResponse() {
-
-    }
+    private List<User> Users;
 
     public String getResponse() {
         return Response;
@@ -18,11 +16,11 @@ public class UserResponse {
         Response = response;
     }
 
-    public User getUser() {
-        return user;
+    public List<User> getUsers() {
+        return Users;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(List<User> users) {
+        Users = users;
     }
 }

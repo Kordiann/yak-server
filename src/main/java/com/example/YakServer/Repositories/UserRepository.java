@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface UserRepository  extends CrudRepository<User, Integer> {
     User findById(int id);
+    Iterable<User> findAll();
     Optional<User> findByUserName(String userName);
     User findByActivationCode(Integer activationCode);
 }
