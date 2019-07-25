@@ -9,7 +9,6 @@ import com.example.YakServer.Repositories.UserRepository;
 import com.example.YakServer.Responds.FriendReqResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,93 +35,44 @@ public class FriendsController {
 
     private final Gson gson = new Gson();
 
-    private final ObjectMapper mapper = new ObjectMapper();
-
     //    ---------- POST METHODS ----------      //
 
-    @PostMapping(path="/push")
+    @PostMapping(path = "/push")
     public @ResponseBody
-    String pushFriendRequest(@RequestParam String senderName, @RequestParam String recipientName) {
-        FriendReqResponse res = new FriendReqResponse();
-
+    String pushFriendRequest(@RequestParam String senderName, @RequestParam String recipientName)
+            throws JsonProcessingException {
         Optional<User> optionalSender = userRepository.findByUserName(senderName);
         Optional<User> optionalRecipient = userRepository.findByUserName(recipientName);
 
+        FriendReqResponse res = new FriendReqResponse();
+
+
         if (optionalSender.isPresent() && optionalRecipient.isPresent()) {
-            Optional<FriendRequest> optionalFriendRequest1 =
-                    friendRequestRepository.findBySenderAndRecipient(optionalSender.get(), optionalRecipient.get());
-            Optional<FriendRequest> optionalFriendRequest2 =
-                    friendRequestRepository.findBySenderAndRecipient(optionalRecipient.get(), optionalSender.get());
+            return new FriendsOperator(friendRequestRepository, friendRepository)
+                    .push(optionalSender.get(), optionalRecipient.get());
 
-            if (!optionalFriendRequest1.isPresent() &&
-            !optionalFriendRequest2.isPresent()) {
-                FriendRequest friendRequest = new FriendRequest();
-
-                friendRequest.setSender(optionalSender.get());
-                friendRequest.setRecipient(optionalRecipient.get());
-
-                friendRequestRepository.save(friendRequest);
-
-                res.setRecipientName(optionalRecipient.get().getUserName());
-                res.setSenderName(optionalSender.get().getUserName());
-
-                res.setResponse("200");
-            } else {
-                res.setResponse("400");
-            }
         } else {
             res.setResponse("400");
+            return gson.toJson(res);
         }
-
-        return gson.toJson(res);
     }
 
-    @PostMapping(path="/activate")
+    @PostMapping(path = "/activate")
     public @ResponseBody
-    String activateFriend(@RequestParam String senderName, @RequestParam String recipientName) {
+    String activateFriend(@RequestParam String senderName, @RequestParam String recipientName)
+            throws JsonProcessingException {
         FriendReqResponse res = new FriendReqResponse();
 
         Optional<User> sender = userRepository.findByUserName(senderName);
         Optional<User> recipient = userRepository.findByUserName(recipientName);
 
         if(sender.isPresent() && recipient.isPresent()) {
-            Optional<FriendRequest> optionalFriendRequest =
-                    friendRequestRepository.findBySenderAndRecipient(sender.get(), recipient.get());
-
-            if(optionalFriendRequest.isPresent()) {
-                if(!optionalFriendRequest.get().isActivate()) {
-
-                    if (optionalFriendRequest.get()
-                            .getRecipient()
-                            .getId()
-                            .equals(recipient.get().getId())) {
-                        Friend friend = new Friend();
-                        FriendRequest friendRequest = optionalFriendRequest.get();
-                        friendRequest.setActivate(true);
-
-                        friend.setFirstUser(sender.get());
-                        friend.setSecondUser(recipient.get());
-
-                        friendRepository.save(friend);
-                        friendRequestRepository.save(friendRequest);
-
-                        res.setResponse("200");
-                        res.setActivate(true);
-                    } else {
-                        res.setResponse("400");
-                    }
-                } else {
-                    res.setResponse("400");
-                    res.setActivate(true);
-                }
-            } else {
-                res.setResponse("400");
-            }
+            return new FriendsOperator(friendRequestRepository, friendRepository)
+                    .activate(sender.get(), recipient.get());
         } else {
             res.setResponse("400");
+            return gson.toJson(res);
         }
-
-        return gson.toJson(res);
     }
 
     //    ---------- GET METHODS ----------      //
@@ -130,16 +80,35 @@ public class FriendsController {
     @GetMapping(path="/userFriends")
     public @ResponseBody
     String getUserFriends(@RequestParam Integer userID) throws JsonProcessingException {
-        return new FriendsSystem(userRepository,friendRepository,friendRequestRepository)
+        return new FriendsSystem(userRepository, friendRepository, friendRequestRepository)
                 .genForFriendsPage(userID);
     }
 
-    @GetMapping(path="/usersForUsersPage")
+    @GetMapping(path = "/usersForUsersPage")
     public @ResponseBody
     String getUsersForUsersPage(@RequestParam Integer userID)
             throws JsonProcessingException {
-        return new FriendsSystem(userRepository,
-                friendRepository,
-                friendRequestRepository).genForUserPage(userID);
+        return new FriendsSystem(userRepository, friendRepository, friendRequestRepository)
+                .genForUserPage(userID);
+    }
+
+    //    ---------- DELETE METHODS ----------      //
+
+    @DeleteMapping(path = "/deleteReq")
+    public @ResponseBody
+    String deleteFriendRequest(@RequestParam String senderName, @RequestParam String recipientName)
+            throws JsonProcessingException{
+        Optional<User> sender = userRepository.findByUserName(senderName);
+        Optional<User> recipient = userRepository.findByUserName(recipientName);
+
+        FriendReqResponse res = new FriendReqResponse();
+
+        if(sender.isPresent() && recipient.isPresent()) return
+                new FriendsOperator(friendRequestRepository, friendRepository)
+                        .delete(sender.get(), recipient.get());
+        else {
+            res.setResponse("400");
+            return gson.toJson(res);
+        }
     }
 }

@@ -23,9 +23,6 @@ public class Friend {
     @NotNull
     private Date timeExists;
 
-    @ManyToOne
-    private FriendBox friendBox;
-
     public Friend() {
         this.timeExists = new Date();
     }
@@ -62,13 +59,5 @@ public class Friend {
 
     public void setTimeExists(Date timeExists) {
         this.timeExists = timeExists;
-    }
-
-    public FriendBox getFriendBox() {
-        return friendBox;
-    }
-
-    public void setFriendBox(FriendBox friendBox) {
-        this.friendBox = friendBox;
     }
 }

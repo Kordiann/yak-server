@@ -6,9 +6,8 @@
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>2.1.3.RELEASE</version>
-        <relativePath>../yak-server</relativePath>
     </parent>
-    <groupId>com.example</groupId>
+    <groupId>com.yak-server</groupId>
     <artifactId>yak-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>yak-server</name>
@@ -93,6 +92,7 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
+            <version>20180813</version>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
@@ -106,10 +106,9 @@
         <dependency>
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
+            <version>3.3</version>
         </dependency>
-
     </dependencies>
-
 
     <build>
         <plugins>

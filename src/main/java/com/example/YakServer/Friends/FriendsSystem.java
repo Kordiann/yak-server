@@ -18,7 +18,7 @@ import com.google.common.collect.Lists;
 import java.util.List;
 import java.util.Optional;
 
-public class FriendsSystem {
+class FriendsSystem {
     private List<User> users;
 
     private UserRepository userRepo;
@@ -30,7 +30,6 @@ public class FriendsSystem {
     private final ObjectMapper mapper = new ObjectMapper();
 
     private UsersResponse usersRes = new UsersResponse();
-
 
     FriendsSystem(UserRepository userRepo,
                   FriendRepository friendRepo,
