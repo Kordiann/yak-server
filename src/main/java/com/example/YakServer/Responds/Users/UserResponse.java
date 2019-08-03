@@ -1,4 +1,4 @@
-package com.example.YakServer.Responds;
+package com.example.YakServer.Responds.Users;
 
 import com.example.YakServer.Models.User;
 

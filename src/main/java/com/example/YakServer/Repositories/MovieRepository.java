@@ -8,6 +8,10 @@ import java.util.Optional;
 
 public interface MovieRepository extends CrudRepository<Movie, Integer> {
     List<Movie> findAll();
+
+    Optional<Movie> findByImdbID(String imdbID);
     Optional<Movie> findById(Integer id);
+    Optional<List<Movie>> findAllByTitleContaining(String title);
+
     Movie save(Movie movie);
 }

@@ -10,7 +10,7 @@ import com.example.YakServer.Repositories.FriendRepository;
 import com.example.YakServer.Repositories.FriendRequestRepository;
 import com.example.YakServer.Repositories.UserRepository;
 
-import com.example.YakServer.Responds.UsersResponse;
+import com.example.YakServer.Responds.Users.UsersResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -55,8 +55,12 @@ class FriendsSystem {
 
             deleteDefaultUsers(users);
 
-            usersRes.setResponse("200");
-            usersRes.setUsers(users);
+            if(!users.isEmpty()) {
+                usersRes.setResponse("200");
+                usersRes.setUsers(users);
+            } else {
+                usersRes.setResponse("400");
+            }
 
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(usersRes);
         } else {

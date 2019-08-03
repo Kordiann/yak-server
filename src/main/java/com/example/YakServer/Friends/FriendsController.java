@@ -1,12 +1,10 @@
 package com.example.YakServer.Friends;
 
-import com.example.YakServer.Models.Friend;
-import com.example.YakServer.Models.FriendRequest;
 import com.example.YakServer.Models.User;
 import com.example.YakServer.Repositories.FriendRepository;
 import com.example.YakServer.Repositories.FriendRequestRepository;
 import com.example.YakServer.Repositories.UserRepository;
-import com.example.YakServer.Responds.FriendReqResponse;
+import com.example.YakServer.Responds.Friends.FriendReqResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.google.gson.Gson;

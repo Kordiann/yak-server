@@ -1,16 +1,13 @@
 package com.example.YakServer.User;
 
 import com.example.YakServer.Models.Movie;
-import com.example.YakServer.Responds.AuthResponse;
+import com.example.YakServer.Responds.Users.AuthResponse;
 import com.example.YakServer.Responds.Response;
-import com.example.YakServer.Responds.UserResponse;
-import com.example.YakServer.Models.Message;
+import com.example.YakServer.Responds.Users.UserResponse;
 import com.example.YakServer.Models.User;
-import com.example.YakServer.Repositories.MessageRepository;
-import com.example.YakServer.Repositories.MovieRepository;
 import com.example.YakServer.Repositories.UserRepository;
 
-import com.example.YakServer.Responds.UsersResponse;
+import com.example.YakServer.Responds.Users.UsersResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
@@ -30,22 +27,18 @@ import java.util.*;
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    public MovieRepository movieRepository;
-
-    @Autowired
-    public MessageRepository messageRepository;
+    private UserRepository userRepo;
 
     private final Gson gson = new Gson();
 
     private final ObjectMapper mapper = new ObjectMapper();
 
+    //    ---------- POST METHODS ----------      //
+
     @PostMapping(path = "/add")
     public @ResponseBody
     ResponseEntity<String> addUser (@RequestParam String userName, @RequestParam String password, @RequestParam String email) {
-        EmailOperator operator = new EmailOperator(userRepository);
+        EmailOperator operator = new EmailOperator(userRepo);
 
         User user = new User();
 
@@ -54,21 +47,22 @@ public class UserController {
         user.setActivationCode(operator.generateCode());
         user.setEmail(email);
         user.setDefaultUser(true);
+        user.setSender(false);
+        user.setRecipient(false);
+        user.setFriend(false);
 
 //        operator.sendEmail(email);
 
-        userRepository.save(user);
+        userRepo.save(user);
 
         return new ResponseEntity<>("Hello World!", HttpStatus.OK);
     }
-
-
 
     @PostMapping(path = "/user/change_password")
     public @ResponseBody
     String updatePassword (@RequestParam Integer userID, @RequestParam String oldPassword,
                               @RequestParam String newPassword) {
-        Optional optionalUser = userRepository.findById(userID);
+        Optional optionalUser = userRepo.findById(userID);
         Response res = new Response();
 
         if(optionalUser.isPresent()) {
@@ -76,7 +70,7 @@ public class UserController {
 
             if(user.getPassword().equals(oldPassword)) {
                 user.setPassword(newPassword);
-                userRepository.save(user);
+                userRepo.save(user);
 
                 res.setResponse("200");
             }else {
@@ -97,7 +91,7 @@ public class UserController {
     String allUsers () throws JsonProcessingException{
         UsersResponse res = new UsersResponse();
 
-        List<User> users = Lists.newArrayList(userRepository.findAll());
+        List<User> users = Lists.newArrayList(userRepo.findAll());
 
         res.setResponse("200");
         res.setUsers(users);
@@ -105,18 +99,14 @@ public class UserController {
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(res);
     }
 
-    @GetMapping(path = "/message/all")
-    public @ResponseBody
-    Iterable<Message> allMessages () {
-        return messageRepository.findAll();
-    }
+
 
     @GetMapping(path = "/authorize")
     public @ResponseBody
     String authorizeUser (@RequestParam String userName, @RequestParam String password) {
         AuthResponse response = new AuthResponse();
 
-        User user = userRepository.findByUserName(userName).get();
+        User user = userRepo.findByUserName(userName).get();
 
         if(user.getUserName().equals(userName)
                 && user.getPassword().equals(password)){
@@ -136,7 +126,7 @@ public class UserController {
             throws JsonProcessingException {
         UserResponse res = new UserResponse();
 
-        Optional optionalUser = userRepository.findByUserName(userName);
+        Optional optionalUser = userRepo.findByUserName(userName);
 
         if(optionalUser.isPresent()) {
             User user = (User) optionalUser.get();
@@ -157,29 +147,14 @@ public class UserController {
     @GetMapping(path = "/user/movies")
     public @ResponseBody
     List<Movie> getUserMovies (@RequestParam Integer userID) {
-        return new UserService(userRepository).getUserMovies(userID);
+        return new UserService(userRepo).getUserMovies(userID);
     }
 
     @GetMapping(path = "/user/test")
     public @ResponseBody
     void sendEmail () throws UnirestException {
-        new EmailOperator(userRepository).sendSimpleMessage();
+        new EmailOperator(userRepo).sendSimpleMessage();
     }
-
-    @GetMapping(path = "/baba")
-    public @ResponseBody
-    void sada () {
-        List<User> users = Lists.newArrayList(userRepository.findAll());
-
-        for (User user :
-                    users) {
-            user.setDefaultUser(true);
-            userRepository.save(user);
-        }
-
-
-    }
-
 
 
 //    @GetMapping(path = "/activate")
@@ -207,33 +182,5 @@ public class UserController {
 //        operator.sendEmail(email);
 //    }
 
-//    @PostMapping(path = "/message/post")
-//    public @ResponseBody
-//    String createChatMessage (@RequestParam Integer authorId, @RequestParam Integer recipientId,
-//                              @RequestParam String content) {
-//
-//        Iterable<User> Users = userRepository.findAll();
-//
-//        Date date =  new Date();
-//
-//        Message message = new Message();
-//
-//        User author = new User();
-//        User recipient = new User();
-//
-//        for (User user :
-//                Users) {
-//            if(user.getId().equals(authorId)) author = user;
-//            else if(user.getId().equals(recipientId)) recipient = user;
-//        }
-//
-//        message.setAuthorUser(author);
-//        message.setRecipientUser(recipient);
-//        message.setTimeSend(date);
-//        message.setContent(content);
-//
-//        messageRepository.save(message);
-//
-//        return "Posted Message from " + author.getUserName() + " To " + recipient.getUserName();
-//    }
+
 }

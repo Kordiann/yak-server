@@ -1,4 +1,4 @@
-package com.example.YakServer.Movies;
+package com.example.YakServer.Movies.MovieSystem;
 
 import com.example.YakServer.Models.Movie;
 import com.example.YakServer.Models.User;
@@ -10,38 +10,63 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 class Connector {
-    private String API_URL;
-    private LinkedList<Movie> movies = new LinkedList<>();
-    private String TYPE_OF_SEARCHING;
+    private final Logger logger = Logger.getLogger(DBGenerator.class.getName());
 
-    Connector(String TYPE_OF_SEARCHING, String REQUEST_PARAM) {
-        this.API_URL = "http://www.omdbapi.com/?"
-                + TYPE_OF_SEARCHING
+    Connector() {}
+
+    Optional<Movie> getMovieById(String REQUEST_IMDBID) {
+        String reqParam = "i";
+
+        String API_URL = "http://www.omdbapi.com/?"
+                + reqParam
                 + "="
-                + updateRequestParam(REQUEST_PARAM)
+                + updateRequestParam(REQUEST_IMDBID)
                 + "&apikey=503d68ce";
-        this.TYPE_OF_SEARCHING = TYPE_OF_SEARCHING;
-        getResponse();
+
+        String response = getResponse(API_URL);
+
+        if(!response.equals("")) {
+            Movie movie = parseMovie(response);
+
+            return Optional.of(movie);
+        } else {
+            return Optional.empty();
+        }
     }
 
-    private String updateRequestParam(String request_param) {
-        return request_param.replaceAll(" ", "+");
+    Optional<List<Movie>> getMoviesByTitle(String REQUEST_TITLE) {
+        String reqParam = "s";
+
+        String API_URL = "http://www.omdbapi.com/?"
+                + reqParam
+                + "="
+                + updateRequestParam(REQUEST_TITLE)
+                + "&apikey=503d68ce";
+
+        String response = getResponse(API_URL);
+
+        if(!response.equals("")) {
+            List<Movie> movies = parseMovies(response);
+
+            return Optional.of(movies);
+        } else {
+            return Optional.empty();
+        }
     }
 
-    // Getting Response
-    private void getResponse() {
+    private String getResponse(String API_URL) {
         try {
-            // Connecting to API
             URL obj = new URL(API_URL);
             HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-            //Reading Data
             BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
             String inputLine;
@@ -55,19 +80,12 @@ class Connector {
             in.close();
             String RESPONSE_STRING = response.toString();
 
-            System.out.println(RESPONSE_STRING);
-
-            //Checking Response from Api
             if (checkResponse(RESPONSE_STRING)) {
+               return RESPONSE_STRING;
+            } else {
+                logger.log(Level.WARNING, "Search JSON doesn't have Response");
 
-                //If response is true parse and save this to movies
-                if (TYPE_OF_SEARCHING.equals("s")) {
-                    parseToMoviesFromSearch(RESPONSE_STRING);
-                } else if(TYPE_OF_SEARCHING.equals("i")) {
-                    parseToMoviesWithoutSearch(RESPONSE_STRING);
-                }
-            } else if (!checkResponse(RESPONSE_STRING)) {
-
+                return "";
             }
 
         } catch (Exception e) {
@@ -75,41 +93,42 @@ class Connector {
         }
     }
 
-    //Method which gives Response Param as boolean
     private boolean checkResponse(String resString) throws Exception {
         JSONObject jsonToCheck = new JSONObject(resString);
 
         return jsonToCheck.getBoolean("Response");
     }
 
-    // Parsing JSON to movies
-    private void parseToMoviesFromSearch(String RESPONSE_STRING) {
+    private List<Movie> parseMovies(String RESPONSE_STRING) {
         try {
+            List<Movie> movies = new ArrayList<>();
+
             JSONArray resArray = extractJSONArrayFromSearch(RESPONSE_STRING);
 
             for (int i = 0; i < resArray.length(); i++) {
                 JSONObject movieAsJSON = resArray.getJSONObject(i);
 
-                generateMovie(movieAsJSON);
+                movies.add(generateMovie(movieAsJSON));
             }
+
+            return movies;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    // Parsing JSON to movies
-    private void parseToMoviesWithoutSearch(String RESPONSE_STRING) {
+    private Movie parseMovie(String RESPONSE_STRING) {
         try {
             JSONObject json = new JSONObject(RESPONSE_STRING);
 
-            generateMovie(json);
+            return generateMovie(json);
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void generateMovie(JSONObject json) {
+    private Movie generateMovie(JSONObject json) {
         try {
             Movie movie = new Movie();
             List<User> Saver = new ArrayList<>();
@@ -122,11 +141,11 @@ class Connector {
             movie.setType(json.getString("Type"));
             movie.setPoster(json.getString("Poster"));
             movie.setImdbID(json.getString("imdbID"));
-            movie.setYear(year);
+            movie.setYear(Integer.parseInt(year));
             if (json.has("Plot")) movie.setPlot(json.getString("Plot"));
             movie.setSaver(Saver);
 
-            movies.add(movie);
+            return movie;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -142,7 +161,8 @@ class Connector {
         }
     }
 
-    public LinkedList<Movie> getMovies() {
-        return movies;
+    private String updateRequestParam(String request_param) {
+        return request_param.replaceAll(" ", "+");
     }
+
 }

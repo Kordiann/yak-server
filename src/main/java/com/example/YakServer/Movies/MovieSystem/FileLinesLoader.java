@@ -1,4 +1,4 @@
-package com.example.YakServer.Movies;
+package com.example.YakServer.Movies.MovieSystem;
 
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;

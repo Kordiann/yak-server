@@ -1,91 +1,76 @@
 package com.example.YakServer.Models;
 
-import org.hibernate.annotations.NaturalId;
-
 import javax.persistence.*;
+
 import javax.validation.constraints.NotNull;
+
 import java.util.Date;
 
 @Entity
 @Table(name = "message")
 public class Message {
-    @javax.persistence.Id
-
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer Id;
+    @Column(name = "id")
+    private Integer id;
 
     @OneToOne
-    @JoinColumn(name = "authorUserId")
-    private User AuthorUser;
+    private User sender;
 
     @OneToOne
-    @JoinColumn(name = "recipientUserId")
-    private User RecipientUser;
+    private User recipient;
 
     @NotNull
-    private Date TimeSend;
+    private Date timeSend;
 
-    @NotNull
-    @NaturalId
-    private String Content;
-
-    @ManyToOne
-    private MessagesBox messagesBox;
+    private String content;
 
     public Message() {}
 
-    public Message(User authorUser, User recipientUser, String content) {
-        this.AuthorUser = authorUser;
-        this.RecipientUser = recipientUser;
-        this.Content = content;
-        this.TimeSend = new Date();
+    public Message(User sender, User recipient, String content) {
+        this.sender = sender;
+        this.recipient = recipient;
+        this.content = content;
+        this.timeSend = new Date();
     }
 
     public Integer getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Integer id) {
-        Id = id;
+        this.id = id;
     }
 
-    public User getAuthorUser() {
-        return AuthorUser;
+    public User getSender() {
+        return sender;
     }
 
-    public void setAuthorUser(User authorUser) {
-        AuthorUser = authorUser;
+    public void setSender(User sender) {
+        this.sender = sender;
     }
 
-    public User getRecipientUser() {
-        return RecipientUser;
+    public User getRecipient() {
+        return recipient;
     }
 
-    public void setRecipientUser(User recipientUser) {
-        RecipientUser = recipientUser;
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
     }
 
     public Date getTimeSend() {
-        return TimeSend;
+        return timeSend;
     }
 
     public void setTimeSend(Date timeSend) {
-        TimeSend = timeSend;
+        this.timeSend = timeSend;
     }
 
     public String getContent() {
-        return Content;
+        return content;
     }
 
     public void setContent(String content) {
-        Content = content;
-    }
-
-    public MessagesBox getMessagesBox() {
-        return messagesBox;
-    }
-
-    public void setMessagesBox(MessagesBox messagesBox) {
-        this.messagesBox = messagesBox;
+        this.content = content;
     }
 }

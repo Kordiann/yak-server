@@ -7,7 +7,7 @@ import com.example.YakServer.Models.User;
 import com.example.YakServer.Repositories.FriendRepository;
 import com.example.YakServer.Repositories.FriendRequestRepository;
 
-import com.example.YakServer.Responds.FriendReqResponse;
+import com.example.YakServer.Responds.Friends.FriendReqResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -78,7 +78,7 @@ class FriendsOperator {
                 friendRequest.setActivate(true);
             }
         } else {
-            friendReqRes.setResponse("koko");
+            friendReqRes.setResponse("400");
         }
 
         return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(friendReqRes);

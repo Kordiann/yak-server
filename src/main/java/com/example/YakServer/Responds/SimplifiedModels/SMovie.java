@@ -1,17 +1,6 @@
-package com.example.YakServer.Models;
+package com.example.YakServer.Responds.SimplifiedModels;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
-import java.util.List;
-
-@Entity
-@Table(name = "movie")
-public class Movie {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+public class SMovie {
     private Integer Id;
     private String title;
     private String type;
@@ -20,10 +9,7 @@ public class Movie {
     private Integer year;
     private String plot;
 
-    @ManyToMany(fetch = FetchType.LAZY,
-             mappedBy = "SavedMovies")
-    @JsonBackReference
-    private List<User> Saver;
+    private boolean isSaved;
 
     public Integer getId() {
         return Id;
@@ -65,15 +51,6 @@ public class Movie {
         this.imdbID = imdbID;
     }
 
-    @JsonIgnore
-    public List<User> getSaver() {
-        return Saver;
-    }
-
-    public void setSaver(List<User> saver) {
-        Saver = saver;
-    }
-
     public Integer getYear() {
         return year;
     }
@@ -88,5 +65,13 @@ public class Movie {
 
     public void setPlot(String plot) {
         this.plot = plot;
+    }
+
+    public boolean isSaved() {
+        return isSaved;
+    }
+
+    public void setSaved(boolean saved) {
+        isSaved = saved;
     }
 }
