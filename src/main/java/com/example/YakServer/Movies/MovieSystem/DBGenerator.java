@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Level;
@@ -19,16 +20,36 @@ import java.util.logging.Logger;
 public class DBGenerator {
     private MovieRepository movieRepo;
 
-    private UserRepository userRepo;
-
     private APIGenerator APIGenerator;
 
     private final Logger logger = Logger.getLogger(DBGenerator.class.getName());
 
     @Autowired
-    public DBGenerator(MovieRepository movieRepo, UserRepository userRepo) {
+    public DBGenerator(MovieRepository movieRepo) {
         this.movieRepo = movieRepo;
         this.APIGenerator = new APIGenerator(movieRepo);
+    }
+
+    public String execute(String value, Integer count) {
+        String result = null;
+
+        switch(value) {
+            case "home" : {
+                result = generateHome(count);
+                break;
+            }
+
+            case "search" : {
+                result = generateSearch(count);
+                break;
+            }
+
+            default: {
+                logger.log(Level.WARNING, "Search Condition Incorrect");
+            }
+        }
+
+        return result;
     }
 
     public String execute(String value, String phrase, User user) {
@@ -39,10 +60,12 @@ public class DBGenerator {
                 result = generateMovies(phrase, user);
                 break;
             }
+
             case "i" : {
                 result = generateMovie(phrase, user);
                 break;
             }
+
             default: {
                 logger.log(Level.WARNING, "Search Condition Incorrect");
             }
@@ -59,10 +82,12 @@ public class DBGenerator {
                 result = generateMovies(phrase);
                 break;
             }
+
             case "i" : {
                 result = generateMovie(phrase);
                 break;
             }
+
             default: {
                 logger.log(Level.WARNING, "Search Condition Incorrect");
             }
@@ -75,7 +100,7 @@ public class DBGenerator {
         Optional<Movie> optionalMovie = movieRepo.findByImdbID(imdbID);
 
         if(optionalMovie.isPresent()) {
-            return generateMovie(imdbID, user);
+            return APIGenerator.generateResponse(optionalMovie.get(), user.getSavedMovies());
         } else {
             return APIGenerator.generateMovie(imdbID);
         }
@@ -85,10 +110,9 @@ public class DBGenerator {
         Optional<List<Movie>> optionalMovies = movieRepo.findAllByTitleContaining(title);
 
         if(optionalMovies.isPresent()) {
-            return "imdbID";
+            return APIGenerator.generateResponse(optionalMovies.get(), user.getSavedMovies());
         } else {
-//            SOMETHING
-            return "XD";
+            return APIGenerator.generateMovies(title);
         }
     }
 
@@ -112,7 +136,27 @@ public class DBGenerator {
         }
     }
 
-    private void validateUser(User user) {
+    private String generateHome(Integer count) {
+        List<Movie> movies = movieRepo.findAll();
 
+        movies.removeIf(movie -> movie.getYear() < 2019);
+
+        return APIGenerator.generateResponse(sliceList(movies, count));
+    }
+
+    private String generateSearch(Integer count) {
+        List<Movie> movies = movieRepo.findAll();
+
+        Collections.shuffle(movies);
+
+        return APIGenerator.generateResponse(sliceList(movies, count));
+    }
+
+    private List<Movie> sliceList(List<Movie> movies, Integer count) {
+        while(movies.size() > count) {
+            movies.remove(movies.size() - 1);
+        }
+
+        return movies;
     }
 }

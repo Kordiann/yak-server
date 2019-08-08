@@ -51,7 +51,6 @@ class MessagesSystem {
             messagesRes.setUser(user.getUserName());
             messagesRes.setMessages(messagesContainers);
 
-//            System.out.println(messagesContainers);
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(messagesRes);
         } else {
             messagesRes.setResponse("400");

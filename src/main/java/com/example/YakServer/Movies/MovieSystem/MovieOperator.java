@@ -20,7 +20,7 @@ public class MovieOperator implements MovieSaver {
     private final Logger logger = Logger.getLogger(MovieOperator.class.getName());
 
     @Autowired
-    MovieOperator(MovieRepository movieRepo) {
+    public MovieOperator(MovieRepository movieRepo) {
         this.movieRepo = movieRepo;
     }
 

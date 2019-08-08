@@ -58,13 +58,13 @@ public class SearchMessages extends MessagesService {
 
     private void pushDownList(SMessage message, String actualUser) {
         if(this.messagesContainers.isEmpty()) {
-            assignUser(message, actualUser);
+            assignUser(message, actualUser, message.getRecipientID());
 
         } else if(checkExisting(actualUser)) {
             this.messagesContainers.get(getIndex(actualUser)).getMessages().add(message);
 
         } else if(!checkExisting(actualUser)) {
-            assignUser(message, actualUser);
+            assignUser(message, actualUser, message.getRecipientID());
 
         }
     }
@@ -81,7 +81,7 @@ public class SearchMessages extends MessagesService {
         return x;
     }
 
-    private void assignUser(SMessage message, String actualUser) {
+    private void assignUser(SMessage message, String actualUser, Integer recipientID) {
         UserMessagesContainer messagesContainer = new UserMessagesContainer();
 
         messagesContainer.setUserName(actualUser);
@@ -92,6 +92,7 @@ public class SearchMessages extends MessagesService {
             messages.add(message);
 
             messagesContainer.setMessages(messages);
+            messagesContainer.setUserID(recipientID);
         } else {
             messagesContainer.getMessages().add(message);
         }

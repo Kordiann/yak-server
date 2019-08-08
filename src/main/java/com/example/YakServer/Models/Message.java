@@ -23,6 +23,7 @@ public class Message {
     @NotNull
     private Date timeSend;
 
+    @Column(unique = false)
     private String content;
 
     public Message() {}

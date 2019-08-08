@@ -3,6 +3,7 @@ package com.example.YakServer.Messages;
 import com.example.YakServer.Models.Message;
 import com.example.YakServer.Models.User;
 
+import com.example.YakServer.Movies.MovieSystem.DBGenerator;
 import com.example.YakServer.Repositories.MessageRepository;
 import com.example.YakServer.Repositories.UserRepository;
 
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Controller
 @CrossOrigin(origins = "http://localhost:3000")
@@ -31,11 +34,8 @@ public class MessagesController {
     @Autowired
     private UserRepository userRepo;
 
-    private MessagesResponse messageRes;
+    private final Logger logger = Logger.getLogger(MessagesController.class.getName());
 
-    private Date date;
-
-    private final ObjectMapper mapper = new ObjectMapper();
 
     //    ---------- POST METHODS ----------      //
 
@@ -49,7 +49,7 @@ public class MessagesController {
         if (sender.isPresent() &&
                 recipient.isPresent()) {
             Message message = new Message();
-            date = new Date();
+            Date date = new Date();
 
             message.setSender(sender.get());
             message.setRecipient(recipient.get());
@@ -59,17 +59,25 @@ public class MessagesController {
 
             messageRepo.save(message);
         } else {
-            System.out.println("Some error, sender or recipient doesn't exists");
+            logger.log(Level.WARNING, "Sender or Recipient does not exists");
         }
     }
 
     //    ---------- GET METHODS ----------      //
 
-    @GetMapping(path = "/get")
+    @GetMapping(path = "/get/all")
     public @ResponseBody
     String getMessages (@RequestParam Integer senderID)
             throws JsonProcessingException {
         MessagesSystem messagesSystem = new MessagesSystem(messageRepo, userRepo);
         return messagesSystem.genForMessagesPage(senderID);
     }
+
+//    @GetMapping(path = "/get")
+//    public @ResponseBody
+//    String getMessages (@RequestParam Integer senderID, @RequestParam Integer recipientID)
+//            throws JsonProcessingException {
+//        MessagesSystem messagesSystem = new MessagesSystem(messageRepo, userRepo);
+//        return messagesSystem.genForMessagesPage(senderID);
+//    }
 }

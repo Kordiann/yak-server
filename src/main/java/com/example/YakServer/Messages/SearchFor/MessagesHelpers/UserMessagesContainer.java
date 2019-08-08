@@ -6,6 +6,7 @@ import java.util.List;
 
 public class UserMessagesContainer {
     private String userName;
+    private Integer userID;
     private List<SMessage> messages;
 
     public UserMessagesContainer() {
@@ -25,5 +26,13 @@ public class UserMessagesContainer {
 
     public void setMessages(List<SMessage> messages) {
         this.messages = messages;
+    }
+
+    public Integer getUserID() {
+        return userID;
+    }
+
+    public void setUserID(Integer userID) {
+        this.userID = userID;
     }
 }

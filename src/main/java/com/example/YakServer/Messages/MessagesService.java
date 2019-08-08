@@ -28,6 +28,7 @@ public class MessagesService {
             sMessage.setId(message.getId());
             sMessage.setSender(message.getSender().getUserName());
             sMessage.setRecipient(message.getRecipient().getUserName());
+            sMessage.setRecipientID(message.getRecipient().getId());
             sMessage.setTimeSend(message.getTimeSend());
             sMessage.setContent(message.getContent());
 

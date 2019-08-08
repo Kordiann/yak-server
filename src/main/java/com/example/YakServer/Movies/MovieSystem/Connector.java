@@ -15,12 +15,12 @@ import java.util.Optional;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-class Connector {
+public class Connector {
     private final Logger logger = Logger.getLogger(DBGenerator.class.getName());
 
-    Connector() {}
+    public Connector() {}
 
-    Optional<Movie> getMovieById(String REQUEST_IMDBID) {
+    public Optional<Movie> getMovieById(String REQUEST_IMDBID) {
         String reqParam = "i";
 
         String API_URL = "http://www.omdbapi.com/?"

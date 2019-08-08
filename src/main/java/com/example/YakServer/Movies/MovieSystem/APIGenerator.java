@@ -11,6 +11,7 @@ import com.example.YakServer.Responds.SimplifiedModels.SMovie;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.http.cookie.SM;
 import org.springframework.beans.factory.annotation.Autowired
         ;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Component
-class APIGenerator {
+public class APIGenerator {
     private final Connector connector;
     private final MovieOperator movieOperator;
 
@@ -31,7 +32,7 @@ class APIGenerator {
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
-    APIGenerator(MovieRepository movieRepo) {
+    public APIGenerator(MovieRepository movieRepo) {
         this.connector = new Connector();
         this.movieOperator = new MovieOperator(movieRepo);
     }
@@ -102,7 +103,7 @@ class APIGenerator {
         }
     }
 
-    String generateResponse(Movie movie, User user) {
+    String generateResponse(Movie movie, List<Movie> userMovies) {
         try {
             MoviesResponse movieRes = new MoviesResponse();
 
@@ -110,7 +111,7 @@ class APIGenerator {
             sMovies.add(parseMovieToSMovie(movie));
 
             movieRes.setResponse("200");
-            movieRes.setSMovies(sMovies);
+            movieRes.setSMovies(validateUserMovies(sMovies, userMovies));
 
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(movieRes);
         } catch (JsonProcessingException js) {
@@ -138,6 +139,26 @@ class APIGenerator {
         }
     }
 
+    String generateResponse(List<Movie> movies, List<Movie> userMovies) {
+        try {
+            MoviesResponse movieRes = new MoviesResponse();
+
+            List<SMovie> sMovies = new ArrayList<>();
+
+            for(Movie movie :
+                    movies) {
+                sMovies.add(parseMovieToSMovie(movie));
+            }
+
+            movieRes.setResponse("200");
+            movieRes.setSMovies(validateUserMovies(sMovies, userMovies));
+
+            return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(movieRes);
+        } catch (JsonProcessingException js) {
+            throw new RuntimeException(js.getMessage());
+        }
+    }
+
     private SMovie parseMovieToSMovie(Movie movie) {
         SMovie smovie = new SMovie();
 
@@ -149,5 +170,20 @@ class APIGenerator {
         smovie.setYear(movie.getYear());
 
         return smovie;
+    }
+
+    private List<SMovie> validateUserMovies(List<SMovie> sMovies, List<Movie> userMovies) {
+        for(SMovie sMovie :
+                sMovies) {
+            for(Movie userMovie :
+                    userMovies) {
+                if(sMovie.getImdbID().equals(userMovie.getImdbID())) {
+                    sMovie.setSaved(true);
+                    break;
+                }
+            }
+        }
+
+        return sMovies;
     }
 }

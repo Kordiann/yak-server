@@ -4,13 +4,10 @@ import java.util.Date;
 
 public class SMessage {
     private Integer id;
-
     private String sender;
-
     private String recipient;
-
+    private Integer recipientID;
     private Date timeSend;
-
     private String content;
 
     public SMessage() {}
@@ -53,5 +50,13 @@ public class SMessage {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public Integer getRecipientID() {
+        return recipientID;
+    }
+
+    public void setRecipientID(Integer recipientID) {
+        this.recipientID = recipientID;
     }
 }
