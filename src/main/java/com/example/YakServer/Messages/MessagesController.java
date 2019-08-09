@@ -7,6 +7,7 @@ import com.example.YakServer.Movies.MovieSystem.DBGenerator;
 import com.example.YakServer.Repositories.MessageRepository;
 import com.example.YakServer.Repositories.UserRepository;
 
+import com.example.YakServer.Responds.Messages.MessageResponse;
 import com.example.YakServer.Responds.Messages.MessagesResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -34,6 +35,8 @@ public class MessagesController {
     @Autowired
     private UserRepository userRepo;
 
+    private final ObjectMapper mapper = new ObjectMapper();
+
     private final Logger logger = Logger.getLogger(MessagesController.class.getName());
 
 
@@ -41,10 +44,12 @@ public class MessagesController {
 
     @PostMapping(path = "/post")
     public @ResponseBody
-    void pushMessage (@RequestParam Integer senderID, @RequestParam Integer recipientID,
-                              @RequestParam String content) {
+    String pushMessage (@RequestParam Integer senderID, @RequestParam Integer recipientID,
+                              @RequestParam String content) throws  JsonProcessingException {
         Optional<User> sender = userRepo.findById(senderID);
         Optional<User> recipient = userRepo.findById(recipientID);
+
+        MessageResponse res = new MessageResponse();
 
         if (sender.isPresent() &&
                 recipient.isPresent()) {
@@ -58,9 +63,18 @@ public class MessagesController {
             message.setTimeSend(date);
 
             messageRepo.save(message);
+
+            res.setSender(sender.get().getUserName());
+            res.setRecipient(recipient.get().getUserName());
+            res.setResponse("200");
+
         } else {
             logger.log(Level.WARNING, "Sender or Recipient does not exists");
+
+            res.setResponse("400");
         }
+
+        return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(res);
     }
 
     //    ---------- GET METHODS ----------      //
