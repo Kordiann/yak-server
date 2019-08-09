@@ -5,6 +5,7 @@ import java.util.Date;
 public class SMessage {
     private Integer id;
     private String sender;
+    private Integer senderID;
     private String recipient;
     private Integer recipientID;
     private Date timeSend;
@@ -26,6 +27,14 @@ public class SMessage {
 
     public void setSender(String sender) {
         this.sender = sender;
+    }
+
+    public Integer getSenderID() {
+        return senderID;
+    }
+
+    public void setSenderID(Integer senderID) {
+        this.senderID = senderID;
     }
 
     public String getRecipient() {

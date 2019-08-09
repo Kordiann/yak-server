@@ -11,14 +11,15 @@ import com.example.YakServer.Responds.Messages.MessagesResponse;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Component
 class MessagesSystem {
-    private MessageRepository messageRepo;
-
     private UserRepository userRepo;
 
     private SearchMessages searchMessages;
@@ -29,8 +30,8 @@ class MessagesSystem {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
+    @Autowired
     MessagesSystem(MessageRepository messageRepo, UserRepository userRepo) {
-        this.messageRepo = messageRepo;
         this.userRepo = userRepo;
 
         this.searchMessages = new SearchMessages(messageRepo);
@@ -49,6 +50,7 @@ class MessagesSystem {
 
             messagesRes.setResponse("200");
             messagesRes.setUser(user.getUserName());
+
             messagesRes.setMessages(messagesContainers);
 
             return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(messagesRes);

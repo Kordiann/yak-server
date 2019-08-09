@@ -64,8 +64,11 @@ public class SearchMessages extends MessagesService {
             this.messagesContainers.get(getIndex(actualUser)).getMessages().add(message);
 
         } else if(!checkExisting(actualUser)) {
-            assignUser(message, actualUser, message.getRecipientID());
-
+            if(actualUser.equals(message.getSender())) {
+                assignUser(message, actualUser, message.getSenderID());
+            } else if (actualUser.equals(message.getRecipient())) {
+                assignUser(message, actualUser, message.getRecipientID());
+            }
         }
     }
 
