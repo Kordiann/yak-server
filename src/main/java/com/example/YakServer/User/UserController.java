@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.*;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://yak-client.herokuapp.com")
 @RequestMapping(path = "/users")
 public class UserController {
 

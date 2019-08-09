@@ -26,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 @Controller
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://yak-client.herokuapp.com")
 @RequestMapping(path = "/messages")
 public class MessagesController {
     @Autowired
