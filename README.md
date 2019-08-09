@@ -6,4 +6,7 @@ Make Basic features with users, messages system and friendship system.
 
 # installation
  - Download .zip or clone repo
- - in cmd (cd yak-server-master) and next (mvn clean install)
+ - In cmd (cd yak-server-master) and next (mvn clean install)
+
+# api
+Will be soon add for testing.
