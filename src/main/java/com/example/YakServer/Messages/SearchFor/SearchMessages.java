@@ -58,18 +58,27 @@ public class SearchMessages extends MessagesService {
 
     private void pushDownList(SMessage message, String actualUser) {
         if(this.messagesContainers.isEmpty()) {
-            assignUser(message, actualUser, message.getRecipientID());
+            assignUser(message, actualUser, validateID(actualUser, message));
 
         } else if(checkExisting(actualUser)) {
             this.messagesContainers.get(getIndex(actualUser)).getMessages().add(message);
 
         } else if(!checkExisting(actualUser)) {
-            if(actualUser.equals(message.getSender())) {
-                assignUser(message, actualUser, message.getSenderID());
-            } else if (actualUser.equals(message.getRecipient())) {
-                assignUser(message, actualUser, message.getRecipientID());
-            }
+            assignUser(message, actualUser, validateID(actualUser, message));
+
         }
+    }
+
+    private Integer validateID(String actualUser, SMessage message) {
+        Integer validatedID = -1;
+
+        if(actualUser.equals(message.getSender())) {
+           validatedID = message.getSenderID();
+        } else if (actualUser.equals(message.getRecipient())) {
+            validatedID = message.getRecipientID();
+        }
+
+        return validatedID;
     }
 
     private int getIndex(String actualUser) {
